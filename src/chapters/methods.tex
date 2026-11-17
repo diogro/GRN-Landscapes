@@ -1,10 +1,67 @@
-\section{Methods \& Materials} \label{methods}
+\section{Methods} \label{methods}
 
-\subsection{Behavioural setup}
-\lipsum[2]
+\setcounter{equation}{0}
 
-\subsection{Electrophysiological setup}
-\lipsum[2] 
+\subsection{GRN equations}
+
+ 
+\hspace*{\parindent} Motif 1:
+\begin{equation}
+\begin{aligned}
+\dot{x}_1 &= \alpha_1 - \gamma x_1 \\
+\dot{x}_2 &= \alpha_2 \left( \frac{x_1}{\theta + x_1} \right) - \gamma x_2
+\end{aligned}
+\end{equation}
+
+Motif 2:
+\begin{equation}
+\begin{aligned}
+\dot{x}_1 &= \alpha_1 - \gamma x_1 \\
+\dot{x}_2 &= \alpha_2 \left( 1 - \frac{x_1}{\theta + x_1} \right) - \gamma x_2
+\end{aligned}
+\end{equation}
+
+Motif 3:
+\begin{equation}
+\begin{aligned}
+\dot{x}_1 &= \alpha_1 \left(1 - \frac{x_2}{\theta + x_2} \right) - \gamma x_1\\
+\dot{x}_2 &= \alpha_2 \left( \frac{x_1}{\theta + x_1} \right) - \gamma x_2
+\end{aligned}
+\end{equation}
+
+Motif 4:
+\begin{equation}
+\begin{aligned}
+\dot{x}_1 &= \alpha_1 \left(1 - \frac{x_2}{\theta + x_2} \right) - \gamma x_1\\
+\dot{x}_2 &= \alpha_2 \left(1 - \frac{x_1}{\theta + x_1} \right) - \gamma x_2
+\end{aligned}
+\end{equation}
+
+Motif 5:
+\begin{equation}
+\begin{aligned}
+\dot{x}_1 &= \alpha_1 \left( \frac{x_2}{\theta + x_2} \right) - \gamma x_1\\
+\dot{x}_2 &= \alpha_2 \left( \frac{x_1}{\theta + x_1} \right) - \gamma x_2
+\end{aligned}
+\end{equation}
+
+Motif 6:
+\begin{equation}
+\begin{aligned}
+\dot{x}_1 &= \alpha_1 - \gamma x_1\\
+\dot{x}_2 &= \alpha_2 - \gamma x_2
+\end{aligned}
+\end{equation}
+
+\subsection{Perlin noise}
+
+Adaptive landscapes were generated as two-dimensional Perlin noise, a type of gradient noise that provides a computationally efficient way to generate naturally looking textures. The algorithm defines a grid of random gradient vectors, calculates the dot products between the gradient vectors and their offsets, and interpolates between these values. The frequency parameter defines the grid size, and thus allows us to specify adaptive landscapes of different complexity.
+We used the Perlin noise generator from the R package \textit{ambient} \parencite{ambient2025} implementing the algorithm developed by \cite{perlin1985image}. \FIG{perlin} shows five adaptive landscapes generated under different frequencies, and the spatial autocorrelation profiles of these landscapes.
 
 
 
+
+
+\subsection{Separatrix identification with support vector machines}
+
+We determined the basins of attraction associated with each point in phenotype space $x_1, x_2$ using a Support Vector Machine (SVM) with a radial basis function kernel. We employed the SVM implementation by \cite{chang2011libsvm} from the R package \textit{e1071} \parencite{e1071_manual}. The SVM was trained to predict evolutionary outcomes (i.e. which peak is reached) from starting points in phenotype space, thereby inferring the boundaries between regions of alternative evolutionary outcomes. We used a cost parameter of $C=10$ and a kernel parameter $\gamma=0.5$, controlling the trade-off between training error and the complexity of the inferred boundary. The boundary optimally separating regions of alternative evolutionary outcomes was plotted on top of the adaptive landscapes used in the simulations (\FIG{fig1}, \FIG{fig3}). We calculated the 10-fold cross-validated classification accuracy for the inferred separatrices, all of which were >97\%. The remaining error is likely due to the observed stochasticity of outcomes.

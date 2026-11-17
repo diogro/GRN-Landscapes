@@ -1,3 +1,130 @@
 \section{Results} \label{results}
-\lipsum[1-4]
-\input{src/tables/simple-table.tex}
+
+\subsection{The genotype-phenotype map transforms basins of attraction}
+
+ Initially focusing on the role of the genotype-phenotype map, we first look at the influence of the supply of heritable variation on populations evolving on a set of simple adaptive landscapes. We consider populations characterized by two loci $\alpha_1$ and $\alpha_2$ and two heritable phenotypic traits $x_1$ and $x_2$ under a set of different linear genotype-phenotype maps. Individuals are diploid, carrying two alleles per locus. The genotypic value at locus $i$ is given by $\alpha_i=\alpha_{i,1} +\alpha_{i,2}$, where $\alpha_{i,1}$ and $\alpha_{i,2}$ denote the allelic values. Mutations are introduced each generation at a per-allele mutation rate $\mu=0.025$, with mutational effects drawn from a distribution with standard deviation $\sigma=0.05$. We ran simulations for populations consisting of 1,000 diploid individuals, split evenly between males and females, over a number of discrete generations until a local fitness optimum was reached. The simulation code and analysis is deposited on Zenodo \parencite{christophnetz_2026_19204638}.
+ 
+ We consider a linear genotype-phenotype mapping $\boldsymbol{x}=\mathbf{B}\boldsymbol{\alpha}$ \parencite{wagner1989multivariate, wagner1984eigenvalue}, and explore three different maps,  \( \mathbf{B}_1= [1, 0,  0,  1]  \), \( \mathbf{B}_2= [\frac{5}{3}, \frac{4}{3}, \frac{4}{3}, \frac{5}{3}]  \) and \( \mathbf{B}_3=[ \frac{5}{3},  -\frac{4}{3}, -\frac{4}{3}, \frac{5}{3}] \). $\mathbf{B}_1$ represents a one-to-one genotype-phenotype map, $\mathbf{B}_2$ and $\mathbf{B}_3$ lead to a distortion of the phenotypic effect of genetic variation.
+
+ For these linear genotype-phenotype maps, the M-matrix is given by $\mathbf{M}=\Sigma \mathbf{BB}^\top$, with \( \Sigma=2\mu[ \sigma^2,  0, 0, \sigma^2] \), and is constant over phenotype space. The M-matrix under $\mathbf{B}_1$ is unbiased and has equal variance terms in both phenotypic dimensions, while under $\mathbf{B}_2$ and $\mathbf{B}_3$ the M-matrices become eccentric with positive and negative covariance terms, respectively (\FIG[]{fig1}). All three M-matrices have the same determinant and therefore cover the same volume in phenotype space over which mutations spread out. 
+ 
+ We first look at the evolution on an adaptive landscape with a single global optimum, generated from a gaussian fitness function \FIG[A]{fig1}. 
+ %$f(x_1, x_2)=e^{-\frac{(x-5.5)^2+(y-5.5)^2}{2*3^2}}$
+Populations were initialized at four different locations in phenotype space away from the evolutionary optimum. As expected, populations with an unbiased M-matrix roughly follow the lines of steepest ascent, whereas populations with eccentric M-matrices are initially biased towards the direction of the dominant eigenvector of the M-matrix ('genetic lines of least resistance', \cite{Schluter1996-uo}).  
+
+We then generated adaptive landscapes with two or more adaptive optima using Perlin noise \parencite{perlin1985image}, normalized to values between 0 and 1. Perlin noise allows the generation of landscapes with smooth variation that at the same time are computationally efficient (\nameref{methods}). The landscape we consider in \FIG[B, C\&D]{fig1} contains two alternative optima in the region $x_1, x_2 \in [0, 10]$.  We observe that the genotype-phenotype map exerts a strong influence on evolutionary outcomes. Populations were initialized from a grid of starting points spread out over $x_1 \in [2, 8], x_2 \in [0, 6]$, with 10 replicate simulation runs for each point. We focus on evolutionary outcomes, connecting each starting point to the optimum that the population converges upon. The separatrix between the basins of attraction of adjacent evolutionary optima was inferred with support vector machines (SVM, see \nameref{methods}) and is drawn as a line across the adaptive landscape. We observe that developmental bias leads to a significant distortion of the basins of attraction. While the separatrix for the unbiased M-matrix runs nearly vertically down the adaptive landscape (function of the selected adaptive landscape, \FIG[B]{fig1}), it is rotated into the direction of the leading eigenvector once the M-matrix becomes biased (\FIG[C\&D]{fig1}). Thus, the M-matrix alters the evolutionary dynamics, and populations that differ in $\mathbf{M}$ can evolve from the same origin to different local optima. 
+
+ Thus far, we have assumed linear genotype-phenotype maps where the effect of genetic variation is constant over phenotype space. In reality, the underlying developmental system determines how genetic variation is expressed at the phenotypic level and thus may change over the space of possible phenotypes. In the following, we explore how a set of simple gene regulatory motifs influences the M-matrix across phenotype space, and what effect this has for evolutionary outcomes on adaptive landscapes of varying complexity.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{src/figures/fig1.png}
+    \caption{\textbf{The effect of different linear genotype-phenotype maps on evolutionary trajectories and outcomes (A) }  In a single-peaked adaptive landscape, the shape of the M-matrix initially biases evolutionary trajectories in the direction of the dominant eigenvector. All populations converge on the same unique optimum, independently of their M-matrix. \textbf{(B, C, D)} Evolutionary simulations from a grid of starting points, evenly spread over $x_1 \in [2, 8], x_2 \in [0, 6]$, with 10 replicate simulations for each point of origin. Each point is connected by orange edges to the optima that populations converged upon. Points are colored with respect to the frequency of the most common evolutionary outcome, such that regions where populations can evolve to both evolutionary optima are visible in shades of gray and white. The separatrix dividing regions of alternative evolutionary outcomes, inferred by SVM is shown as a red (unbiased M-matrix) or white (eccentric M-matrices) line. The 10-fold cross-validated classification accuracy of the SVM was 98.9\%, 99.1\% and 99.4\%. \textbf{(B)} Unbiased M-matrix without covariance. \textbf{(C)} M-matrix with positive covariance terms. \textbf{(D)} M-matrix with negative covariance terms. All three M-matrices shown have the same determinant. Phenotypic optima are marked in red. M-matrix entries rounded to the 6th decimal, ellipses not to scale.}
+   
+    \label{fig:fig1}
+\end{figure}
+
+
+\subsection{Gene regulation shapes phenotypic variation}
+
+As before, we consider a set of two traits $x_1$ and $x_2$, which however are now under the control of gene regulatory networks \parencite{gjuvsland2007statistical}. These networks consist of interacting transcription factors that regulate each other’s expression. The resulting dynamics determine stable patterns of gene expression, which constitute the phenotypes. Although kept deliberately simple, these GRNs capture core features of developmental processes that dynamically generate the phenotype through developmental time \parencite{lewontin1983organism, alberch1991genes, milocco2024utilizing}. This represents a minimal developmental map between genotype and phenotype where the genotype consists of the strengths of regulatory interactions (model parameters), and the phenotype corresponds to the emergent stable states of gene expression.
+
+Specifically, we draw on the work of \cite{hether2014genetic} and \cite{gjuvsland2007statistical}, who explored a system of gene regulatory networks of two components, with activating and inhibitory interactions between them (\FIG{fig2}). Gene expression is controlled by four parameters; two activation rates $\alpha_1$ and $\alpha_2$, a rate of decay $\gamma$, and a parameter $\theta$ that determines the sensitivity of the regulatory response. Hether and Hohenlohe focused on the evolution of the parameters $\alpha_1$ and $\alpha_2$, and we follow their example by setting the other parameters to constant values ($\gamma=1$, $\theta=5$). Importantly, then, for a given set of parameter values $\alpha_1$ and $\alpha_2$, the gene networks have a single steady state \parencite{hether2014genetic}, such that genotype and phenotype form a one-to-one mapping.
+
+We can determine the M-matrix at each point in phenotype space from the underlying gene regulatory dynamics, capturing the phenotypic variation introduced to a population of clones by mutation in a single generation. Let $\mathbf{x} = (x_1, x_2)^\top$ denote the vector of gene expression levels, or phenotypes, and $\boldsymbol{\alpha} = (\alpha_1, \alpha_2)^\top$ the vector of mutable genetic parameters. The dynamics of gene expression are in general given by
+\begin{equation}
+\dot{\mathbf{x}} = \mathbf{f}(\mathbf{x}, \boldsymbol{\alpha}),
+\end{equation}
+where $\mathbf{f}$ encodes the regulatory interactions defined by the different networks. The full equations are listed in \nameref{methods}. The sensitivity of the equilibrium expression $\mathbf{x}^*$ to a parameter $\alpha_i$ is
+\begin{equation}
+\mathbf{s}_i = \frac{\partial \mathbf{x}^*}{\partial \alpha_i} = - \mathbf{J}^{-1} \frac{\partial \mathbf{f}}{\partial \alpha_i},
+\end{equation}
+with $\mathbf{J} = \frac{\partial \mathbf{f}}{\partial \mathbf{x}} \big|_{\mathbf{x}^*}$ being the Jacobian of the developmental function $\mathbf{f}$ with respect to the state variables \parencite{khalil2002nonlinear, milocco2024utilizing, milocco2026bridging}. Assuming mutations in $\alpha_i$ occur at a rate $2\mu$ and have variance $\sigma^2$, the mutational contribution to the phenotypic variance-covariance is
+\begin{equation}
+\mathbf{M}_i = 2\mu\sigma^2 \, \mathbf{s}_i \mathbf{s}_i^\top.
+\end{equation}
+
+If mutations affect $\alpha_1$ and $\alpha_2$ independently, the total M-matrix can be written in compact matrix notation as
+\begin{equation}
+\label{eqn:MandJ}
+\mathbf{M} =\mathbf{M}_1+\mathbf{M}_2 = \mathbf{S} \, \boldsymbol{\Sigma} \, \mathbf{S}^\top,
+\end{equation}
+where 
+\begin{equation}
+\mathbf{S} = \begin{pmatrix} \mathbf{s}_1 & \mathbf{s}_2 \end{pmatrix}, 
+\quad 
+\boldsymbol{\Sigma} = 2\mu \mathrm{diag}(\sigma^2, \sigma^2).
+\end{equation}
+This connects the structure of phenotypic variation directly to the regulatory interactions of the underlying network.
+
+As found by \cite{hether2014genetic}, we see that M-matrices and sensitivity vectors vary strongly both between motifs and within motifs over phenotype space (\FIG{fig2}). Motifs with positive gene regulation (motifs 1 and 5) exhibit overall positive covariance that gets very large as the activator gene becomes small. Motifs with inhibitory interactions (motifs 2 and 4) show overall negative covariance. Motif 3, which mixes activating and inhibitory interactions, exhibits positive covariance at small values of $x_1$, and negative covariance at larger values of $x_1$. In the absence of interactions (motif 6), there is a constant amount of variance in both $x_1$ and $x_2$ throughout phenotype space and the covariance terms are zero. Motif 6 is thus identical to the linear genotype-phenotype map $\mathbf{B}_1$ and serves as a basis of comparison to a system without developmental bias.
+
+
+
+\begin{figure}
+    \includegraphics[width=0.65\textheight]{src/figures/fig2.png}
+    \caption{\textbf{Gene regulatory motifs and M-matrices.} Gene regulatory motifs between genes $x_1$ and $x_2$, controlled by activation rates $\alpha_1$ and $\alpha_2$, rate of decay $\gamma$, and a parameter $\theta$ that determines the strength of regulatory interactions (full equations given in \nameref{methods}). Each motif induces a tensor field of M-matrices over different points in phenotype space, shown as 95\% confidence ellipses, magnified by a factor 40 (mutation rate $\mu=0.025$, standard deviation $\sigma=0.05$). Sensitivity vectors on $\alpha_1$ and $\alpha_2$ are shown in blue and red, respectively. (modified figures 1 and 2 from \cite{hether2014genetic}).}
+    \label{fig:fig2}
+\end{figure}
+
+\subsection{Evolution under complex genotype-phenotype maps}
+
+We next return to evolutionary simulations to explore how gene regulatory motifs and the M-matrices they induce affect evolutionary outcomes on different adaptive landscapes. As before, we simulate the evolution of populations consisting of 1,000 diploid individuals. The genotype of each individual is the set of $\alpha_1$ and $\alpha_2$ parameters, which now function as the parameters of the regulatory network, and the phenotype is the steady state of gene expression. The complexity of the adaptive landscape is set by the frequency parameter of the Perlin noise, with higher frequencies corresponding to a more complex or rugged adaptive landscape (compare frequencies 0.1 and 0.5 in \FIG[]{fig3}, Supplemental \FIG[]{perlin}).  
+
+First, we employ these simulations to determine how GRN motifs affect evolutionary outcomes and thus, the domains of attraction of different local optima on an adaptive landscape. We ran simulations for each motif from a grid of starting points spread evenly over $x_1, x_2 \in [2, 10]$, in 10 replicates each. At every starting point, a population of clones was initialized, and the simulation ran until the population converged to a local fitness optimum. 
+
+We find that the underlying gene regulatory motif can significantly alter evolutionary outcomes, both on simple and complex adaptive landscapes (\FIG[]{fig3}). The effect of regulatory motifs shows up as a distortion of the domains of attraction around peaks, where the tendency to produce certain kinds of phenotypes over others has a strong influence on evolutionary outcomes. Importantly, unlike the globally linear genotype-phenotype map studied before, the deformation varies across different regions of the map: it is most pronounced in phenotype regions in which the M-matrices are highly eccentric. Thus the nonlinear genotype-phenotype maps induce a deformation of the domains of attraction that also depends on the location in phenotype space. We see e.g. a stronger deformation of the separatrices in motif 1 in the top left corner of the phenotype space, where M-matrices become strongly eccentric. The same can be observed for motif 2 comparing the phenotype region in the bottom left, where M-matrices are nearly unbiased, to the rest of the phenotype space. The deformation  of the separatrices leads populations with different motifs to settle on different optima despite starting from the same origin. The results for all six motifs across both the simple and complex adaptive landscapes are shown in Supplemental \FIG[]{figS1}, \FIG[]{figS2}.
+
+We can further characterize these motif-dependent deformations analytically. Indeed,in the specific scenario where populations begin as clonal and M-matrices can be uniquely identified at every point in phenotype space, we can use a modified version of the Lande equation \parencite{lande1979quantitative} to determine the separatrices between alternative evolutionary outcomes. Specifically, we assume that for each point in phenotype space, $\mathbf{M}\propto \mathbf{G}$, and that phenotypic variation is small relative to the scale of the adaptive landscape, such that $\bar{W}\approx W(\bar{z})$. The adaptive landscape then defines a selection-gradient field that is transformed by the phenotype-dependent genetic covariance tensor field $\mathbf{G}(x_1,x_2)$, yielding a vector field of evolutionary responses on which separatrices can be determined. Since the G-matrices are nonsingular, critical points of the adaptive landscape are preserved, such that local optima remain stable, and separatrices of different motifs cross at the saddle points. The thus-derived separatrices agree well with those observed in simulation (cf. black and white lines in Supplemental \FIG[]{figS1}, \FIG[]{figS2}). 
+
+\begin{figure}[p]
+    \centering
+    \includegraphics[
+        width=\linewidth,
+        height=0.9\textheight,
+        keepaspectratio
+    ]{src/figures/fig3.png}
+    \caption{\textbf{Evolutionary outcomes on two adaptive landscapes of different complexity.} We explore a grid of starting points, spaced evenly over $x_1, x_2 \in [2, 10]$, and simulate the evolution of 10 replicates over 10,000 generations, or until a local fitness optimum has been reached, for motifs 1 (left) and 2 (right). Local optima are highlighted by a red mark, and starting points and outcomes are connected by orange edges. Starting points are colored according to the frequency of the most frequent evolutionary outcome. Regions of ambiguity, shown in shades of grey, arise when replicate populations originating from the same starting point reach different local optima due to stochastic differences. The observed domains of attraction for each motif as inferred by SVM are delineated in white, the domains of attraction for motif 6 are shown in red, providing a comparison with a GRN without developmental bias. The 10-fold cross-validated classification accuracy of the SVM for motifs 1, 2 and 6 was 99.5\% on the simple landscape and 97.6\%, 97.4\%, 97.9\% on the complex landscape.  The adaptive landscapes were generated as Perlin noise with a frequency of 0.1 (top row) and 0.5 (bottom row). }
+    \label{fig:fig3}
+\end{figure}
+
+
+
+\subsection{Adaptive landscape complexity}
+
+Next, we systematically survey how the complexity of the adaptive landscape affects evolutionary outcomes between different gene regulatory motifs. We use the same grid of starting points as before, and quantify how often populations with different regulatory motifs but the same point of origin evolve towards alternative local optima, a measure we term 'outcome mismatch'. More specifically, we compare the evolutionary outcomes observed under a given motif with the evolutionary outcomes observed under motif 6, the GRN with a stable, spherical M-matrix across phenotype space (\FIG[]{fig4}). 
+
+We see that outcome mismatches increase consistently as the adaptive landscape becomes more rugged. The observed variance of outcome mismatches is initially large, and decreases as landscapes become more rugged. This is because adaptive landscapes sampled from low-frequency noise are much more variable with regards to the number of evolutionary optima than landscapes sampled from high-frequency noise.
+The pairwise comparison of evolutionary outcomes across all six network motifs shows that motif 5 is most dissimilar from the other motifs, but shares most evolutionary outcomes with motif 1 (\FIG[B]{fig4}), with which it has activating gene interactions in common and nearly identical M-matrices over half the phenotype space (\FIG[]{fig2}). Likewise, motif 2 and 4, which share the same inhibitory interaction $x_1 \dashv x_2$, have most outcomes in common with each other. Outcome mismatch is sensitive to the distribution of mutations, which we here set to $\sigma=0.2$. Under default conditions ($\sigma=0.05$), the overall pattern remains the same, but the values for outcome divergence is much lower, reaching values around 0.15 at the highest level of landscape frequency.
+
+We further investigated how well the leading eigenvector of the M-matrix is aligned with the direction of evolutionary divergence, defined here as the direction from a population’s starting point to the local optimum it ultimately reaches (\FIG[]{fig5}). In the absence of any alignment, the angle follows a uniform distribution between 0\degree and 90\degree with a median of 45\degree, as is observed for motif 6 across all levels of landscape complexity. For the other five motifs, alignment between evolutionary divergence and $M_{max}$ is weak when landscape complexity is low. Thus, the M-matrix has only a minor influence on the local optimum that a population evolves towards. As the adaptive landscape becomes more rugged, however, the direction of evolutionary divergence becomes increasingly aligned with the leading eigenvector, demonstrating that developmental bias has an increasing influence on evolutionary outcomes the more rugged the adaptive landscape becomes. Among the motifs, we observe a consistent pattern in which alignment is strongest in motif 5, followed by motif 4, and weakest in motif 3, following the eccentricity of the M-matrices these motifs exhibit in the sampled phenotype space.
+%%
+
+
+\begin{figure}
+    \includegraphics[width=0.65\textheight]{src/figures/fig4.png}
+    \caption{\textbf{Mismatch of evolutionary outcomes between different GRNs in dependence of landscape complexity. (A)} Mean outcome mismatch with motif 6 in relation to landscape complexity (frequency of Perlin noise). \textbf{(B)} Proportion of identical outcomes between GRN motifs. }
+    \label{fig:fig4}
+\end{figure}
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{src/figures/fig5.png}
+    \caption{\textbf{Alignment of evolutionary divergence and M-matrix in dependence of landscape complexity.} The angle between the divergence vector and the dominant eigenvector $M_{max}$ of the M-matrix at the evolutionary end points are increasingly well-aligned as landscapes become more complex. For radially symmetric M-matrices (motif 6), angles are uniformly distributed between $0^{\circ}$ and $90^{\circ}$. As landscape complexity increases,  direction of evolutionary divergence and leading eigenvectors become increasingly well aligned. Evolutionary simulations as in \FIG[]{fig4}. }
+    \label{fig:fig5}
+\end{figure}
+
+\subsection{Evolutionary trajectories}
+
+We have previously shown that regulatory motifs can affect evolutionary outcomes through the distortion of the distribution of mutations. Here, we demonstrate the special case that even populations starting with nearly identical M-matrices can diverge along their evolutionary trajectories as the genotype-phenotype map changes over phenotype space.
+We illustrate this using motifs 1 and 5, which have very similar M-matrices in the top left corner of phenotype space \FIG[]{fig1}. More specifically, at $x_1=1.1, x_2=6.4$, the M-matrices of motifs 1 and 5 have nearly identical eccentricity and direction of dominant eigenvectors (eccentricity 0.99996 vs. 0.99997, angle between dominant eigenvector and the $x$-axis 78.17$\degree$ vs. 78.19\degree, \FIG[C]{fig6}). Their determinants are also similar (0.00033 and 0.00025), indicating that the matrices differ primarily in scale, with $\mathbf{M}_1$ being $\sim$30\% larger. 
+
+From this common starting point, we initialize a population of 10,000 individuals, on a select adaptive landscape that holds two adjacent peaks around $(0.6, 10.1)$ and $(1.7, 11.8)$. We simulated evolution over 10,000 generations, long enough for populations to reach their respective optima, and tracked mean phenotypes, M-matrices and G-matrices along the way (\FIG[]{fig6}). We estimated the G-matrices using parent-offspring regression. At each time point, we independently generated parent-offspring pairs by randomly sampling parents from the population, irrespective of fitness.
+
+Both motifs initially evolved in the same direction. As the M-matrices diverged, and motif 5 exhibited very little variation in direction of $x_1=-x_2$, the trajectory of motif 5 branches off and evolves towards the second local optimum. Throughout evolution, the G-matrix tracks the M-matrix with substantial stochasticity. After the motif 1 population has reached the first optimum, stabilizing selection takes over and the correlation between M- and G-matrix breaks with respect to eccentricity. Together, these results show that differences in the genotype-phenotype map can lead to divergent evolution of developmental bias and, consequently, to different evolutionary trajectories and outcomes, even when initial conditions are nearly identical.
+
+\begin{figure}
+    \includegraphics[width=\linewidth]{src/figures/fig6.png}
+    \caption{\textbf{Evolutionary trajectories on an adaptive landscape with two adjacent peaks.}  Populations are initialized at (1.2,6.4) and evolve over 10,000 generations. \textbf{(A)} Adaptive landscape and evolutionary trajectories (dark to bright blue, generation 1 to 10,000). \textbf{(B)} Evolutionary trajectories of mean phenotypes with G- and M-matrices in red and green, printed every 200 generations. Matrices are plotted as 95\% confidence ellipses and are magnified by a factor two. \textbf{(C)} Eccentricity, angle of dominant eigenvector and determinant of the M- and G-matrix over the simulated time. }
+    \label{fig:fig6}
+\end{figure}
+
+

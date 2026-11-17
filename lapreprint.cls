@@ -578,7 +578,10 @@
 \newcommand{\VIDEOSUPP}[2][]{%
   \ifstrequal{#1}{}{}{\autoref{fig:#1}---}\autoref{videosupp:#2}%
 }
-\newcommand{\FIG}[1]{\autoref{fig:#1}}
+%\newcommand{\FIG}[1]{\autoref{fig:#1}}
+\newcommand{\FIG}[2][]{%
+    \hyperref[fig:#2]{Figure~\ref*{fig:#2}#1}%
+}
 \newcommand{\TABLE}[1]{\autoref{tab:#1}}
 \newcommand{\VIDEO}[1]{\autoref{video:#1}}
 \newcommand{\EQ}[1]{\autoref{eq:#1}}
