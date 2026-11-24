@@ -1,4 +1,6 @@
-build/
+build/*
+!build/.gitkeep
 .DS_Store
 GRN_Landscapes.code-workspace
 reviews/
+main.pdf
