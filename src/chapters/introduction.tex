@@ -21,20 +21,29 @@ In a population, heritable genetic variation is summarized by the G-matrix, whic
 Together, $\beta$ and G predict short-term evolutionary change \parencite{lande1979quantitative}; but see \cite{milocco2020evolution, rice2002general}.
 G also underlies the most widely used measures of evolvability, which quantify a population's capacity to respond to selection in a given direction of phenotype space \parencite{hansen2008measuring, Hansen2023-evolvability}.
 
+As a statistical measure of standing genetic variation, the G-matrix is shaped both by processes that introduce and modify variation, such as mutation and recombination, and by processes that remove it, including selection and drift \parencite{jones2004evolution, melo2015directional}.
+The input from mutation is captured by the M-matrix, the variance-covariance matrix of phenotypic variation introduced by mutation each generation \parencite{jones2007mutation, Jones2014-wj}.
+Because the M-matrix describes how mutations arising at the level of the genotype are expressed at the level of the phenotype, it can be interpreted as a local summary of the genotype-phenotype map and, given unbiased mutation at the genotypic level, as a local measure of developmental bias.
+Whereas G describes the variation currently available to selection, M describes the capacity to generate new variation, or variability \parencite{wagner1996perspective}, and is thus a more direct measure of how development shapes evolvability.
+
 The strength of this local framework is also its limitation.
-When the adaptive landscape or the genotype-phenotype map are globally complex, local representations fail to capture properties that matter over longer timescales.
+When the adaptive landscape or the genotype-phenotype map is globally complex, local representations fail to capture properties that matter over longer evolutionary timescales \parencite{milocco2026mapping}.
 Classic quantitative genetics establishes that standing genetic covariation biases short-term evolutionary trajectories away from the direction of steepest ascent \parencite{Schluter1996-uo, lande1979quantitative}, yet on a single-peaked landscape this deflection is purely transient because all populations ultimately converge on the same optimum.
 On a multi-peaked adaptive landscape, by contrast, a local selection gradient cannot by itself determine which peak a population will ultimately reach \parencite{melo2016modularity}, because biased trajectories may cross into alternative basins of attraction.
-Similarly, the G-matrix is not fixed and can evolve both as selection changes across the adaptive landscape and as the M-matrix changes across different regions of a nonlinear genotype-phenotype map \parencite{cai2025disentangling, milocco2022evolution, rice2002general}.
-When complex genotype-phenotype maps and rugged adaptive landscapes interact, predicting long-term evolutionary outcomes requires moving beyond static, local summaries of selection and variation.
+Similarly, under a complex genotype-phenotype map, the M-matrix changes as populations move through genotype space, and with it the G-matrix and the directions of available variation \parencite{cai2025disentangling, milocco2022evolution, rice2002general}.
+These complications are compounded because the adaptive landscape and the genotype-phenotype map do not act independently.
+Selection determines which regions of the genotype-phenotype map a population explores, and therefore which M-matrix it experiences.
+In turn, the M-matrix biases the directions in which the population moves across the adaptive landscape, and therefore which selection gradients it encounters and which peak it may reach.
+Long-term evolution thus emerges from a feedback between them.
+Despite this, they have mostly been studied separately: work on adaptive landscapes typically assumes a simple genotype-phenotype map, and work on developmental bias typically assumes simple selection.
 
-We here address three concrete questions about how the genotype-phenotype map and the adaptive landscape jointly govern long-term evolution.
-First, how and why do different patterns of mutational covariation reshape the domains of attraction of alternative fitness peaks?
-Second, how does adaptive landscape ruggedness alter the relative importance of developmental bias versus selection in determining which peak is reached?
-And third, when developmental bias emerges mechanistically from nonlinear gene regulation rather than being held fixed, how does the evolution of local mutational bias along a trajectory alter long-term evolutionary outcomes?
+Here we independently vary the complexity of both the genotype-phenotype map and the adaptive landscape to address three questions.
+First, how do different genotype-phenotype maps affect evolutionary trajectories and outcomes?
+Second, how does the interplay between the complexity of the adaptive landscape and that of the genotype-phenotype map affect our ability to predict evolution?
+And third, what are the consequences for long-term evolution if developmental bias, and with it evolvability, can evolve?
 
-We tackle these questions by independently varying the complexity of both the genotype-phenotype map and the adaptive landscape in three stages.
-First, we consider linear genotype-phenotype maps—representing fixed, constant patterns of pleiotropy—on a single-peaked landscape and then on a two-peaked landscape, showing mechanistically how biased mutational input rotates basin boundaries toward the major axis of mutational variation.
+We proceed in three stages of increasing complexity.
+First, we consider linear genotype-phenotype maps---representing fixed, constant patterns of pleiotropy---on a single-peaked landscape and then on a two-peaked landscape, showing mechanistically how biased mutational input rotates basin boundaries toward the major axis of mutational variation.
 Second, we replace linear pleiotropy with six minimal two-gene regulatory network (GRN) motifs whose nonlinear dynamics generate spatially varying M-matrices, and systematically vary the ruggedness of multi-peaked adaptive landscapes to quantify when developmental bias overrides local selection in determining evolutionary endpoints.
 Third, we follow replicated evolutionary trajectories of distinct regulatory motifs initialized at a phenotype where their local M-matrices are nearly identical, showing how divergence in the underlying developmental map causes standing ($\mathbf{G}$) and mutational ($\mathbf{M}$) variation to evolve differently and steer populations to different adaptive peaks.
 
